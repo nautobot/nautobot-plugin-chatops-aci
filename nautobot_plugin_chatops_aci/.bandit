@@ -1,0 +1,3 @@
+[bandit]
+exclude: 
+  - *_test.py
