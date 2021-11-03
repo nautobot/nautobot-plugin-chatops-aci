@@ -1,6 +1,15 @@
-# Nautobot Plugin Chatops Cisco ACI
+# Nautobot Cisco ACI Chatops Plugin
 
-A plugin for [Nautobot](https://github.com/nautobot/nautobot).
+The [Nautobot](https://github.com/nautobot/nautobot) Cisco ACI Chatops Plugin extends the [Nautobot Chatops](https://github.com/nautobot/nautobot-plugin-chatops/) framework to interact with a Cisco APIC (Application Policy Infrastructure Controller) using commands in Slack, Webex, Microsoft Teams, and Mattermost.  
+ 
+## Screenshots
+  
+![image](https://user-images.githubusercontent.com/6945229/139871492-6a557f30-65d2-4015-a8f9-c8b9f5f22f88.png)
+
+![image](https://user-images.githubusercontent.com/6945229/139872921-93f14a1d-68c0-4295-a5b3-dcc685c97a5a.png)
+
+![image](https://user-images.githubusercontent.com/6945229/139872116-5a99004a-364b-4a3b-b927-6ca64522ef09.png)
+  
 
 ## Installation
 
@@ -10,39 +19,81 @@ The plugin is available as a Python package in pypi and can be installed with pi
 pip install nautobot-plugin-chatops-aci
 ```
 
-> The plugin is compatible with Nautobot 1.0.1 and higher
-
-To ensure Nautobot Plugin Chatops Cisco ACI is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `nautobot-plugin-chatops-aci` package:
-
-```no-highlight
-# echo nautobot-plugin-chatops-aci >> local_requirements.txt
-```
-
 Once installed, the plugin needs to be enabled in your `nautobot_config.py`
 
 ```python
 # In your nautobot_config.py
 PLUGINS = ["nautobot_chatops", "nautobot_plugin_chatops_aci"]
-
-PLUGINS_CONFIG = {
-  "nautobot_chatops": {
-    # ADD SLACK/MS-TEAMS/WEBEX-TEAMS/MATTERMOST SETTINGS HERE
-  }
-  "nautobot_plugin_chatops_aci": {
-    # ADD YOUR SETTINGS HERE
-  }
-}
 ```
 
-The plugin behavior can be controlled with the following list of settings
+In addition,  add the below `PLUGINS_CONFIG` section to `nautobot_config.py`.  Enable/disable the platform(s) you will be working with by setting the enable flag to `True` or `False` (ex. `"enable_slack: True"`). Also, define the environment variables containing the required tokens/secrets as required for the target platform(s).  
 
-- TODO
+```python
+# Also in nautobot_config.py
+PLUGINS_CONFIG = {
+    "nautobot_chatops": {
+        "enable_slack": True,
+        "enable_ms_teams": False,
+        "enable_webex": os.environ.get("ENABLE_WEBEX"),
+        "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
+        "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
+        "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
+        "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
+        "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
+        "webex_token": os.environ.get("WEBEX_TOKEN"),
+        "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
+        "enable_mattermost": False,
+        "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
+        "mattermost_url": os.environ.get("MATTERMOST_URL"),
+    },
+    "nautobot_chatops_aci": {"aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x}},
+}
+```
+The `aci_creds` setting above creates a Python dictionary which imports any environment variables prefixed with `APIC`. The following environment variables are required:
+
+```python
+APIC_USERNAME_NTCAPIC={{ APIC username }}
+APIC_PASSWORD_NTCAPIC={{ APIC password }}
+APIC_URI_NTCAPIC={{ https://apic_hostname }}
+APIC_VERIFY_NTCAPIC={{ Check SSL certificate (True or False) }}
+```
+The text `NTCAPIC` in the above variable names can be replaced with an identifier of your choosing.  It will show up in the APIC selection dialogue when executing commands as shown below.  
+  
+![image](https://user-images.githubusercontent.com/6945229/139917084-c30a2b8b-940a-4e23-bca4-2ab7bf7f6ed0.png)
+  
+With this syntax, it is possible to support multiple APICs. For example, to add another APIC to the selection list we could specify a second set of credentials:
+
+```python
+APIC_USERNAME_DEVNET={{ APIC username }}
+APIC_PASSWORD_DEVNET={{ APIC password }}
+APIC_URI_DEVNET={{ https://apic_hostname }}
+APIC_VERIFY_DEVNET={{ Check SSL certificate (True or False) }}
+```
+When executing chat commands, we would then be presented with a selection dialog containing both `ntcapic` and `devnet`.  
+
+> When deploying as Docker containers, the above environment variables should be defined in the file `development/creds.env`. An example credentials file `creds.env.example` is available in the `development` folder.  
+
 
 ## Usage
+### Command Setup
+Add a top level command named `aci` to the platform you are using. See the [Platform-specific Setup](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/docs/chat_setup/chat_setup.md#platform-specific-setup) section of the [Nautobot Chatops Installation Guide](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/docs/chat_setup/chat_setup.md) for instructions specific to Slack, Microsoft Teams, WebEx, and Mattermost.  
 
-### API
+The following commands are available:
 
-TODO
+| Command | Description |
+| ------- | ----------- |
+| get-tenants [apic] | Display tenants configured in Cisco ACI.|
+| get-aps [apic] [tenant] | Display Application Profiles configured in Cisco ACI.|
+| get-epgs [apic] [tenant] [ap] | Display Endpoint Groups (EPGs) configured in Cisco ACI.|
+| get-epg-details [apic] [tenant] [ap] [epg] | Display details for an Endpoint Group in Cisco ACI.|
+| get-vrfs [apic] [tenant] | Display vrfs configured in Cisco ACI.|
+| get-bds [apic] [tenant] | Display Bridge Domains configured in Cisco ACI.|
+| get-pending-nodes [apic] |  Display unregistered nodes in Cisco ACI.|
+| get-nodes [apic] | Display fabric nodes in Cisco ACI.|
+| get-controllers [apic] | Display APIC controllers in Cisco ACI.|
+| get-interfaces [apic] [pod-id] [node-id] [state] | Display interfaces on a specified node in Cisco ACI.|
+| register-node [apic] [serial-nbr] [node-id] [name] | Register a new fabric node in Cisco ACI.|
+|  
 
 ## Contributing
 
@@ -163,6 +214,4 @@ Each command can be executed with `invoke <command>`. Environment variables `INV
 For any questions or comments, please check the [FAQ](FAQ.md) first and feel free to swing by the [Network to Code slack channel](https://networktocode.slack.com/) (channel #networktocode).
 Sign up [here](http://slack.networktocode.com/)
 
-## Screenshots
 
-TODO
