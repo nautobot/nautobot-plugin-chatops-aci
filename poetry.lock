@@ -967,7 +967,7 @@ nautobot = "*"
 
 [[package]]
 name = "nautobot-chatops"
-version = "1.5.0"
+version = "1.5.1"
 description = "A plugin providing chatbot capabilities for Nautobot"
 category = "main"
 optional = false
@@ -1629,7 +1629,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "19978ec2ead599dbfae1357a7d1af3bf8bce0e56c70b2dd2be72b483d37fcfee"
+content-hash = "4c2c713d23b2dab5b8a1c25921abc4e26bba55e30daaca936e3f2967eb9c0ecf"
 
 [metadata.files]
 amqp = [
@@ -2078,8 +2078,8 @@ nautobot-capacity-metrics = [
     {file = "nautobot_capacity_metrics-1.0.1-py3-none-any.whl", hash = "sha256:11a5d3686fafa34ddce1d643f54dbd4d205d3c76cb643617b774ff4beb0d3189"},
 ]
 nautobot-chatops = [
-    {file = "nautobot-chatops-1.5.0.tar.gz", hash = "sha256:fa8bb4a0b833614a4fa1fd120d1cce87d97e5ca837234120895e7fcfb8e330af"},
-    {file = "nautobot_chatops-1.5.0-py3-none-any.whl", hash = "sha256:6166018adcda20ce9d1db042d1720eff55ca66240cec527dd4a345220018055b"},
+    {file = "nautobot-chatops-1.5.1.tar.gz", hash = "sha256:cf624560c82bad73a71855f4cf4a45ad94dbd0e260f599fa55fd6474521acde8"},
+    {file = "nautobot_chatops-1.5.1-py3-none-any.whl", hash = "sha256:cf50ec4b4686ab7c70f83f3179eb40fccec750b585144a01d5281fcff8394c02"},
 ]
 netaddr = [
     {file = "netaddr-0.8.0-py2.py3-none-any.whl", hash = "sha256:9666d0232c32d2656e5e5f8d735f58fd6c7457ce52fc21c98d45f2af78f990ac"},

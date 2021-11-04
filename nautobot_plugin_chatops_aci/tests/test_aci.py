@@ -9,16 +9,17 @@ class TestAciMethods(unittest.TestCase):
     """Test NautobotPluginChatopsAci object methods."""
 
     def setUp(self):
+        """Test setup."""
         self.mock_login = Mock()
         self.mock_login.ok = True
         self.aci_obj = NautobotPluginChatopsAci(
-            username="fakeuser", password="fakepwd", base_uri="fakeuri", verify=False  
-        ) # nosec
+            username="fakeuser", password="fakepwd", base_uri="fakeuri", verify=False
+        )  # nosec
 
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_tenants(self, mocked_login, mocked_handle_request):
-        """test get_tenants method."""
+        """Test get_tenants method."""
         mock_fvTenant = Mock()
         mock_fvTenant.status_code = 200
         mock_fvTenant.json.return_value = {
@@ -36,7 +37,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_tenants_negative(self, mocked_login, mocked_handle_request):
-        """test get_tenants error response."""
+        """Test get_tenants error response."""
         mock_fvTenant = Mock()
         mock_fvTenant.ok = False
         mocked_login.return_value = self.mock_login
@@ -47,7 +48,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_aps(self, mocked_login, mocked_handle_request):
-        """test get_aps method."""
+        """Test get_aps method."""
         mock_fvAp = Mock()
         mock_fvAp.json.return_value = {
             "imdata": [
@@ -67,7 +68,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_aps_negative(self, mocked_login, mocked_handle_request):
-        """test get_aps error response."""
+        """Test get_aps error response."""
         mock_fvAp = Mock()
         mock_fvAp.ok = False
         mocked_login.return_value = self.mock_login
@@ -77,7 +78,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_epgs(self, mocked_login, mocked_handle_request):
-        """test get_epgs method."""
+        """Test get_epgs method."""
         mock_fvAEPg = Mock()
         mock_fvAEPg.status_code = 200
         mock_fvAEPg.json.return_value = {
@@ -106,7 +107,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_epgs_negative(self, mocked_login, mocked_handle_request):
-        """test get_epgs failure response."""
+        """Test get_epgs failure response."""
         mock_fvAEPg = Mock()
         mock_fvAEPg.ok = False
         mocked_login.return_value = self.mock_login
@@ -116,7 +117,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_bd_subnet(self, mocked_login, mocked_handle_request):
-        """test get_bd_subnet method."""
+        """Test get_bd_subnet method."""
         mock_fvSubnet = Mock()
         mock_fvSubnet.status_code = 200
         mock_fvSubnet.json.return_value = {
@@ -130,7 +131,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_bd_subnet_negative(self, mocked_login, mocked_handle_request):
-        "test get_bd_subnet failure response."
+        """Test get_bd_subnet failure response."""
         mock_fvSubnet = Mock()
         mock_fvSubnet.ok = False
         mocked_login.return_value = self.mock_login
@@ -140,8 +141,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_contract_filters(self, mocked_login, mocked_handle_request):
-        """test get_contract_filters method."""
-
+        """Test get_contract_filters method."""
         mock_vzSubj = Mock()
         mock_vzSubj.json.return_value = {
             "imdata": [{"vzSubj": {"attributes": {"dn": "uni/tn-test-tenant/brc-test-contract/subj-web"}}}]
@@ -175,7 +175,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_contract_filters_negative(self, mocked_login, mocked_handle_request):
-        """test get_contract_filters error response."""
+        """Test get_contract_filters error response."""
         mock_vzSubj = Mock()
         mock_vzSubj.ok = False
         mocked_login.return_value = self.mock_login
@@ -185,8 +185,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_static_path_nonPC(self, mocked_login, mocked_handle_request):
-        """test get_static_path method for non-PortChanneled link."""
-
+        """Test get_static_path method for non-PortChanneled link."""
         mock_fvRsPathAtt = Mock()
         mock_fvRsPathAtt.json.return_value = {
             "imdata": [
@@ -216,8 +215,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_static_path_PC(self, mocked_login, mocked_handle_request):
-        """test get_static_path method for PortChanneled link."""
-
+        """Test get_static_path method for PortChanneled link."""
         mock_fvRsPathAtt = Mock()
         mock_fvRsPathAtt.json.return_value = {
             "imdata": [
@@ -308,7 +306,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_static_path_negative(self, mocked_login, mocked_handle_request):
-        """test get_static_path error response."""
+        """Test get_static_path error response."""
         mock_response = Mock()
         mock_response.ok = False
         mocked_login.return_value = self.mock_login
@@ -330,8 +328,7 @@ class TestAciMethods(unittest.TestCase):
         mocked_get_contract_filters,
         mocked_get_static_path,
     ):
-        """test get_epg_details method."""
-
+        """Test get_epg_details method."""
         mocked_epg = Mock()
         mocked_epg.json.return_value = {
             "imdata": [
@@ -405,7 +402,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_vrfs(self, mocked_login, mocked_handle_request):
-        """test get_vrfs method."""
+        """Test get_vrfs method."""
         mock_fvCtx = Mock()
         mock_fvCtx.json.return_value = {
             "imdata": [
@@ -424,7 +421,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_vrfs_negative(self, mocked_login, mocked_handle_request):
-        """test get_vrfs error response."""
+        """Test get_vrfs error response."""
         mock_response = Mock()
         mock_response.ok = False
         mocked_login.return_value = self.mock_login
@@ -434,7 +431,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_bds(self, mocked_login, mocked_handle_request):
-        """test get_bds method."""
+        """Test get_bds method."""
         mocked_fvBD = Mock()
         mocked_fvBD.status_code = 200
         mocked_fvBD.json.return_value = {
@@ -521,7 +518,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_bds_negative(self, mocked_login, mocked_handle_request):
-        """test get_bds error response."""
+        """Test get_bds error response."""
         mock_response = Mock()
         mock_response.ok = False
         mocked_login.return_value = self.mock_login
@@ -531,7 +528,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_nodes(self, mocked_login, mocked_handle_request):
-        """test get_nodes method."""
+        """Test get_nodes method."""
         mock_fabricNode = Mock()
         mock_fabricNode.status_code = 200
         mock_fabricNode.json.return_value = {
@@ -623,8 +620,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_nodes_negative(self, mocked_login, mocked_handle_request):
-        """test get_nodes error response."""
-
+        """Test get_nodes error response."""
         mock_fabricNode = Mock()
         mock_fabricNode.ok = False
         mock_fabricNode.status_code = 400
@@ -640,7 +636,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_controllers(self, mocked_login, mocked_handle_request):
-        """test get_controllers method."""
+        """Test get_controllers method."""
         mock_fabricNode = Mock()
         mock_fabricNode.status_code = 200
         mock_fabricNode.json.return_value = {
@@ -698,7 +694,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_controllers_negative(self, mocked_login, mocked_handle_request):
-        """test get_nodes error response."""
+        """Test get_nodes error response."""
         mock_fabricNode = Mock()
         mock_fabricNode.ok = False
         mock_fabricNode.status_code = 400
@@ -714,7 +710,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_pending_nodes(self, mocked_login, mocked_handle_request):
-        """test get_pending_nodes method."""
+        """Test get_pending_nodes method."""
         mocked_dhcpClient = Mock()
         mocked_dhcpClient.status_code = 200
         mocked_dhcpClient.json.return_value = {
@@ -771,7 +767,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_pending_nodes_negative(self, mocked_login, mocked_handle_request):
-        """test get_nodes error response."""
+        """Test get_nodes error response."""
         mocked_dhcpClient = Mock()
         mocked_dhcpClient.ok = False
 
@@ -782,7 +778,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_interfaces(self, mocked_login, mocked_handle_request):
-        """test get_interfaces method."""
+        """Test get_interfaces method."""
         mocked_l1PhysIf = Mock()
         mocked_l1PhysIf.status_code = 200
         mocked_l1PhysIf.json.return_value = {
@@ -852,7 +848,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_get_interfaces_negative(self, mocked_login, mocked_handle_request):
-        """test get_interfaces error response."""
+        """Test get_interfaces error response."""
         mocked_response = Mock()
         mocked_response.ok = False
 
@@ -863,7 +859,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_register_node(self, mocked_login, mocked_handle_request):
-        """test get_interfaces method."""
+        """Test get_interfaces method."""
         mocked_resp = Mock()
         mocked_resp.status_code == 200
         mocked_resp.return_value = True
@@ -890,7 +886,7 @@ class TestAciMethods(unittest.TestCase):
     @patch.object(NautobotPluginChatopsAci, "_handle_request")
     @patch.object(NautobotPluginChatopsAci, "_login")
     def test_register_node_negative(self, mocked_login, mocked_handle_request):
-        """test register_node error response."""
+        """Test register_node error response."""
         mocked_resp = Mock()
         mocked_resp.ok = False
         mocked_resp.status_code = 500

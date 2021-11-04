@@ -36,7 +36,6 @@ def aci(subcommand, **kwargs):
 @subcommand_of("aci")
 def get_tenants(dispatcher, apic):
     """Display tenants configured in Cisco ACI."""
-
     if not apic:
         dispatcher.prompt_from_menu("aci get-tenants", "Select APIC Cluster", apic_choices)
         return False
@@ -65,7 +64,7 @@ def get_tenants(dispatcher, apic):
     send_logo(dispatcher, "get-tenants", f"get-tenants {apic}", args=[("APIC", aci_creds[apic]["base_uri"])])
 
     # TO-DO: add title argument
-    dispatcher.send_large_table(table_fields, table_rows)
+    dispatcher.send_large_table(table_fields, table_rows, title="get-tenants")
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 
@@ -73,7 +72,6 @@ def get_tenants(dispatcher, apic):
 @subcommand_of("aci")
 def get_aps(dispatcher, apic, tenant):
     """Display Application Profiles configured in Cisco ACI."""
-
     if not apic:
         dispatcher.prompt_from_menu("aci get-aps", "Select APIC Cluster", apic_choices)
         return False
@@ -120,7 +118,7 @@ def get_aps(dispatcher, apic, tenant):
     )
 
     # TO-DO: add title argument
-    dispatcher.send_large_table(table_fields, table_rows)
+    dispatcher.send_large_table(table_fields, table_rows, title="get-aps")
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 
@@ -128,7 +126,6 @@ def get_aps(dispatcher, apic, tenant):
 @subcommand_of("aci")
 def get_epgs(dispatcher, apic, tenant, ap):
     """Display Endpoint Groups (EPGs) configured in Cisco ACI."""
-
     if not apic:
         dispatcher.prompt_from_menu("aci get-epgs", "Select APIC Cluster", apic_choices)
         return False
@@ -190,8 +187,7 @@ def get_epgs(dispatcher, apic, tenant, ap):
         args=[("APIC", aci_creds[apic]["base_uri"]), ("Tenant", tenant), ("Application Profile", ap)],
     )
 
-    # TO-DO: add title argument
-    dispatcher.send_large_table(table_fields, table_rows)
+    dispatcher.send_large_table(table_fields, table_rows, "get-epgs")
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 
@@ -199,7 +195,6 @@ def get_epgs(dispatcher, apic, tenant, ap):
 @subcommand_of("aci")
 def get_epg_details(dispatcher, apic, tenant, ap, epg):
     """Display details for an Endpoint Group in Cisco ACI."""
-
     if not apic:
         dispatcher.prompt_from_menu("aci get-epg-details", "Select APIC Cluster", apic_choices)
         return False
@@ -344,7 +339,6 @@ def get_epg_details(dispatcher, apic, tenant, ap, epg):
 @subcommand_of("aci")
 def get_vrfs(dispatcher, apic, tenant):
     """Display vrfs configured in Cisco ACI."""
-
     if not apic:
         dispatcher.prompt_from_menu("aci get-vrfs", "Select APIC Cluster", apic_choices)
         return False
@@ -390,8 +384,7 @@ def get_vrfs(dispatcher, apic, tenant):
         args=[("APIC", aci_creds[apic]["base_uri"]), ("Tenant", tenant)],
     )
 
-    # TO-DO: add title argument
-    dispatcher.send_large_table(table_fields, table_rows)
+    dispatcher.send_large_table(table_fields, table_rows, title="get-vrfs")
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 
@@ -399,7 +392,6 @@ def get_vrfs(dispatcher, apic, tenant):
 @subcommand_of("aci")
 def get_bds(dispatcher, apic, tenant):
     """Display Bridge Domains configured in Cisco ACI."""
-
     if not apic:
         dispatcher.prompt_from_menu("aci get-bds", "Select APIC Cluster", apic_choices)
         return False
@@ -468,7 +460,7 @@ def get_bds(dispatcher, apic, tenant):
         args=[("APIC", aci_creds[apic]["base_uri"]), ("Tenant", tenant)],
     )
 
-    dispatcher.send_large_table(table_fields, table_rows)
+    dispatcher.send_large_table(table_fields, table_rows, title="get-bds")
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 
@@ -514,7 +506,7 @@ def get_pending_nodes(dispatcher, apic):
         dispatcher, "get-pending-nodes", f"get-pending-nodes {apic}", args=[("APIC", aci_creds[apic]["base_uri"])]
     )
 
-    dispatcher.send_large_table(table_fields, table_rows)
+    dispatcher.send_large_table(table_fields, table_rows, title="get-pending-nodes")
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 
@@ -561,7 +553,7 @@ def get_nodes(dispatcher, apic):
 
     send_logo(dispatcher, "get-nodes", f"get-nodes {apic}", args=[("APIC", aci_creds[apic]["base_uri"])])
 
-    dispatcher.send_large_table(table_fields, table_rows)
+    dispatcher.send_large_table(table_fields, table_rows, title="get-nodes")
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 
@@ -609,7 +601,7 @@ def get_controllers(dispatcher, apic):
 
     send_logo(dispatcher, "get-controllers", f"get-controllers {apic}", args=[("APIC", aci_creds[apic]["base_uri"])])
 
-    dispatcher.send_large_table(table_fields, table_rows)
+    dispatcher.send_large_table(table_fields, table_rows, title="get-controllers")
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 
@@ -679,7 +671,7 @@ def get_interfaces(dispatcher, apic, pod_id, node_id, state):
         args=[("APIC", aci_creds[apic]["base_uri"]), ("Pod", pod_id), ("NodeId", node_id), ("State", state)],
     )
 
-    dispatcher.send_large_table(table_fields, table_rows)
+    dispatcher.send_large_table(table_fields, table_rows, title="get-interfaces")
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 

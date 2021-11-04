@@ -1,4 +1,4 @@
-"""ACI ChatOps Utilities"""
+"""ACI ChatOps Utilities."""
 import logging
 from prettytable import PrettyTable
 import re

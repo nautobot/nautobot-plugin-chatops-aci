@@ -15,10 +15,14 @@ logger = logging.getLogger("rq.worker")
 
 
 class RequestConnectError(Exception):
+    """Exception class to be raised upon requests module connection errors."""
+
     pass
 
 
 class RequestHTTPError(Exception):
+    """Exception class to be raised upon requests module HTTP errors."""
+
     pass
 
 
@@ -179,6 +183,7 @@ class NautobotPluginChatopsAci:
             return None
 
     def get_contract_filters(self, tenant, contract_name: str) -> list:
+        """Returns filters for a specified contract."""
         resp = self._get(
             f"/api/node/mo/uni/tn-{tenant}/brc-{contract_name}.json?query-target=subtree&target-subtree-class=vzSubj"
         )
@@ -406,6 +411,7 @@ class NautobotPluginChatopsAci:
         return node_dict
 
     def get_interfaces(self, pod_id, node_id, state):
+        """Get interfaces on a specified leaf with filtering by up/down state."""
         if state == "all":
             resp = self._get(
                 f"/api/node/class/topology/pod-{pod_id}/node-{node_id}/l1PhysIf.json?rsp-subtree=children&rsp-subtree-class=ethpmPhysIf&order-by=l1PhysIf.id"
