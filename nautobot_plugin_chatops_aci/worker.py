@@ -1,11 +1,12 @@
 """Worker functions implementing Nautobot "aci" command and subcommands."""
 
-from django.conf import settings
-from django_rq import job
 from distutils.util import strtobool
+from django.conf import settings
+
 
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
 from nautobot_chatops.choices import CommandStatusChoices
+from nautobot.core.celery import nautobot_task
 from .aci import RequestConnectError, RequestHTTPError, NautobotPluginChatopsAci
 from .utils import logger, send_logo, build_table, send_wait_msg
 
@@ -27,7 +28,7 @@ for key in PLUGIN_SETTINGS["aci_creds"]:
 apic_choices = [(key, key) for key in aci_creds.keys()]
 
 
-@job("default")
+@nautobot_task
 def aci(subcommand, **kwargs):
     """Interact with aci plugin."""
     return handle_subcommands("aci", subcommand, **kwargs)
@@ -722,5 +723,4 @@ def register_node(dispatcher, apic, serial_nbr, node_id, name):
         )
         dispatcher.send_markdown(f"Serial Number: {serial_nbr}\nNode ID: {node_id}\nName: {name}")
         return CommandStatusChoices.STATUS_SUCCEEDED
-    else:
-        return CommandStatusChoices.STATUS_FAILED
+    return CommandStatusChoices.STATUS_FAILED

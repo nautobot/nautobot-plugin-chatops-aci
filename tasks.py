@@ -12,7 +12,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from time import sleep
 from distutils.util import strtobool
 from invoke import Collection, task as invoke_task
 import os
@@ -34,24 +33,20 @@ def is_truthy(arg):
 
 
 # Use pyinvoke configuration for default values, see http://docs.pyinvoke.org/en/stable/concepts/configuration.html
-# Variables may be overwritten in invoke.yml or by the environment variables INVOKE_NAUTOBOT_CHATOPS_xxx
-
-# To test with celery support first run `poetry lock` to update your lock file, then
-# change nautobot_ver to match the lock file and add docker-compose.celery.yml to the compose_files
-namespace = Collection("nautobot_chatops")
+# Variables may be overwritten in invoke.yml or by the environment variables INVOKE_NAUTOBOT_PLUGIN_CHATOPS_aci_xxx
+namespace = Collection("nautobot_plugin_chatops_aci")
 namespace.configure(
     {
-        "nautobot_chatops": {
-            "nautobot_ver": "1.1.2",
-            "project_name": "nautobot-chatops",
-            "python_ver": "3.6",
+        "nautobot_plugin_chatops_aci": {
+            "nautobot_ver": "latest",
+            "project_name": "nautobot-plugin-chatops-aci",
+            "python_ver": "3.8",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": [
                 "docker-compose.requirements.yml",
                 "docker-compose.base.yml",
                 "docker-compose.dev.yml",
-                "docker-compose.celery.yml",
             ],
         }
     }
@@ -86,12 +81,12 @@ def docker_compose(context, command, **kwargs):
         **kwargs: Passed through to the context.run() call.
     """
     build_env = {
-        "NAUTOBOT_VER": context.nautobot_chatops.nautobot_ver,
-        "PYTHON_VER": context.nautobot_chatops.python_ver,
+        "NAUTOBOT_VER": context.nautobot_plugin_chatops_aci.nautobot_ver,
+        "PYTHON_VER": context.nautobot_plugin_chatops_aci.python_ver,
     }
-    compose_command = f'docker-compose --project-name {context.nautobot_chatops.project_name} --project-directory "{context.nautobot_chatops.compose_dir}"'
-    for compose_file in context.nautobot_chatops.compose_files:
-        compose_file_path = os.path.join(context.nautobot_chatops.compose_dir, compose_file)
+    compose_command = f'docker-compose --project-name {context.nautobot_plugin_chatops_aci.project_name} --project-directory "{context.nautobot_plugin_chatops_aci.compose_dir}"'
+    for compose_file in context.nautobot_plugin_chatops_aci.compose_files:
+        compose_file_path = os.path.join(context.nautobot_plugin_chatops_aci.compose_dir, compose_file)
         compose_command += f' -f "{compose_file_path}"'
     compose_command += f" {command}"
     print(f'Running docker-compose command "{command}"')
@@ -100,10 +95,10 @@ def docker_compose(context, command, **kwargs):
 
 def run_command(context, command, **kwargs):
     """Wrapper to run a command locally or inside the nautobot container."""
-    if is_truthy(context.nautobot_chatops.local):
+    if is_truthy(context.nautobot_plugin_chatops_aci.local):
         context.run(command, **kwargs)
     else:
-        # Check if nautobot is running, no need to start another nautobot container to run a command
+        # Check if netbox is running, no need to start another netbox container to run a command
         docker_compose_status = "ps --services --filter status=running"
         results = docker_compose(context, docker_compose_status, hide="out")
         if "nautobot" in results.stdout:
@@ -132,7 +127,7 @@ def build(context, force_rm=False, cache=True):
     if force_rm:
         command += " --force-rm"
 
-    print(f"Building Nautobot with Python {context.nautobot_chatops.python_ver}...")
+    print(f"Building Nautobot with Python {context.nautobot_plugin_chatops_aci.python_ver}...")
     docker_compose(context, command)
 
 
@@ -151,9 +146,6 @@ def debug(context):
     """Start Nautobot and its dependencies in debug mode."""
     print("Starting Nautobot in debug mode...")
     docker_compose(context, "up")
-    sleep(30)
-    print("Load chatops access grant fixtures.")
-    loaddata(context)
 
 
 @task
@@ -161,9 +153,6 @@ def start(context):
     """Start Nautobot and its dependencies in detached mode."""
     print("Starting Nautobot in detached mode...")
     docker_compose(context, "up --detach")
-    sleep(30)
-    print("Load chatops access grant fixtures.")
-    loaddata(context)
 
 
 @task
@@ -230,7 +219,7 @@ def createsuperuser(context, user="admin"):
 )
 def makemigrations(context, name=""):
     """Perform makemigrations operation in Django."""
-    command = "nautobot-server makemigrations nautobot_chatops"
+    command = "nautobot-server makemigrations nautobot_plugin_chatops_aci"
 
     if name:
         command += f" --name {name}"
@@ -252,7 +241,6 @@ def post_upgrade(context):
     Performs Nautobot common post-upgrade operations using a single entrypoint.
 
     This will run the following management commands with default settings, in order:
-
     - migrate
     - trace_paths
     - collectstatic
@@ -302,7 +290,9 @@ def hadolint(context):
 @task
 def pylint(context):
     """Run pylint code analysis."""
-    command = 'pylint --init-hook "import nautobot; nautobot.setup()" --rcfile pyproject.toml nautobot_chatops'
+    command = (
+        'pylint --init-hook "import nautobot; nautobot.setup()" --rcfile pyproject.toml nautobot_plugin_chatops_aci'
+    )
     run_command(context, command)
 
 
@@ -313,7 +303,7 @@ def yamllint(context):
     Args:
         context (obj): Used to run specific commands
     """
-    command = "yamllint ."
+    command = "yamllint . --format standard"
     run_command(context, command)
 
 
@@ -321,7 +311,7 @@ def yamllint(context):
 def pydocstyle(context):
     """Run pydocstyle to validate docstring formatting adheres to NTC defined standards."""
     # We exclude the /migrations/ directory since it is autogenerated code
-    command = 'pydocstyle --config=.pydocstyle.ini --match-dir="^(?!migrations).*"'
+    command = "pydocstyle ."
     run_command(context, command)
 
 
@@ -348,7 +338,7 @@ def check_migrations(context):
         "buffer": "Discard output from passing tests",
     }
 )
-def unittest(context, keepdb=False, label="nautobot_chatops", failfast=False, buffer=True):
+def unittest(context, keepdb=False, label="nautobot_plugin_chatops_aci", failfast=False, buffer=True):
     """Run Nautobot unit tests."""
     command = f"coverage run --module nautobot.core.cli test {label}"
 
@@ -364,7 +354,7 @@ def unittest(context, keepdb=False, label="nautobot_chatops", failfast=False, bu
 @task
 def unittest_coverage(context):
     """Report on code test coverage as measured by 'invoke unittest'."""
-    command = "coverage report --skip-covered --include 'nautobot_chatops/*' --omit *migrations*"
+    command = "coverage report --skip-covered --include 'nautobot_plugin_chatops_aci/*' --omit *migrations*"
 
     run_command(context, command)
 
@@ -377,7 +367,7 @@ def unittest_coverage(context):
 def tests(context, failfast=False):
     """Run all tests for this plugin."""
     # If we are not running locally, start the docker containers so we don't have to for each test
-    if not is_truthy(context.nautobot_chatops.local):
+    if not is_truthy(context.nautobot_plugin_chatops_aci.local):
         print("Starting Docker Containers...")
         start(context)
     # Sorted loosely from fastest to slowest
@@ -391,17 +381,7 @@ def tests(context, failfast=False):
     pydocstyle(context)
     print("Running pylint...")
     pylint(context)
-    print("Running yamllint...")
-    yamllint(context)
     print("Running unit tests...")
     unittest(context, failfast=failfast)
     print("All tests have passed!")
     unittest_coverage(context)
-
-
-@task
-def loaddata(context):
-    """Load chatops acess grant fixtures."""
-    command = "nautobot-server loaddata fixtures.yaml"
-
-    run_command(context, command)

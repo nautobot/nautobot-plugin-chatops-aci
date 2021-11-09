@@ -1,7 +1,7 @@
 """ACI ChatOps Utilities."""
 import logging
-from prettytable import PrettyTable
 import re
+from prettytable import PrettyTable
 
 logger = logging.getLogger("rq.worker")
 
@@ -18,7 +18,7 @@ def send_wait_msg(dispatcher):
     return dispatcher.send_markdown("Retrieving details, please wait...", ephemeral=True)
 
 
-def send_logo(dispatcher, cmd, shortcut, args=[]):
+def send_logo(dispatcher, cmd, shortcut, args=None):
     """Display a logo and message in Slack."""
     output = ""
     if args:
@@ -50,11 +50,11 @@ def build_table(field_names, rows):
 
 def tenant_from_dn(dn):
     """Match an ACI tenant in the Distiguished Name (DN)."""
-    pattern = "tn-[A-Za-z0-9\-]+"  # noqa: W605
+    pattern = "tn-[A-Za-z0-9\-]+"  # noqa: W605  # pylint: disable=anomalous-backslash-in-string
     return re.search(pattern, dn).group().replace("tn-", "").rstrip("/")
 
 
 def ap_from_dn(dn):
     """Match an ACI Application Profile in the Distinguished Name (DN)."""
-    pattern = "ap-[A-Za-z0-9\-]+"  # noqa: W605
+    pattern = "ap-[A-Za-z0-9\-]+"  # noqa: W605 # pylint: disable=anomalous-backslash-in-string
     return re.search(pattern, dn).group().replace("ap-", "").rstrip("/")
