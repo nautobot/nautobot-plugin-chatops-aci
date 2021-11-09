@@ -1,4 +1,5 @@
 """Tasks for use with Invoke.
+
 (c) 2020-2021 Network To Code
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +19,7 @@ import os
 
 def is_truthy(arg):
     """Convert "truthy" strings into Booleans.
+
     Examples:
         >>> is_truthy('yes')
         True
@@ -72,6 +74,7 @@ def task(function=None, *args, **kwargs):
 
 def docker_compose(context, command, **kwargs):
     """Helper function for running a specific docker-compose command with all appropriate parameters and environment.
+
     Args:
         context (obj): Used to run specific commands
         command (str): Command string to append to the "docker-compose ..." command, such as "build", "up", etc.
@@ -236,6 +239,7 @@ def migrate(context):
 def post_upgrade(context):
     """
     Performs Nautobot common post-upgrade operations using a single entrypoint.
+
     This will run the following management commands with default settings, in order:
     - migrate
     - trace_paths
@@ -295,6 +299,7 @@ def pylint(context):
 @task
 def yamllint(context):
     """Run yamllint to validate formating adheres to NTC defined YAML standards.
+
     Args:
         context (obj): Used to run specific commands
     """
