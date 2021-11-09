@@ -1,7 +1,6 @@
 """Worker functions implementing Nautobot "aci" command and subcommands."""
 
 from django.conf import settings
-# from django_rq import job
 from distutils.util import strtobool
 
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
