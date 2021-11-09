@@ -41,9 +41,10 @@ namespace.configure(
             "python_ver": "3.8",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
-            "compose_files": ["docker-compose.requirements.yml",
-            "docker-compose.base.yml",
-            "docker-compose.dev.yml",
+            "compose_files": [
+                "docker-compose.requirements.yml",
+                "docker-compose.base.yml",
+                "docker-compose.dev.yml",
             ],
         }
     }
@@ -285,7 +286,9 @@ def hadolint(context):
 @task
 def pylint(context):
     """Run pylint code analysis."""
-    command = 'pylint --init-hook "import nautobot; nautobot.setup()" --rcfile pyproject.toml nautobot_plugin_chatops_aci'
+    command = (
+        'pylint --init-hook "import nautobot; nautobot.setup()" --rcfile pyproject.toml nautobot_plugin_chatops_aci'
+    )
     run_command(context, command)
 
 
