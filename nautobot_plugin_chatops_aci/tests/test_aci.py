@@ -861,15 +861,15 @@ class TestAciMethods(unittest.TestCase):
     def test_register_node(self, mocked_login, mocked_handle_request):
         """Test get_interfaces method."""
         mocked_resp = Mock()
-        mocked_resp.status_code == 200
+        mocked_resp.status_code == 200  # pylint: disable=W0104
         mocked_resp.return_value = True
 
         mocked_login.return_value = self.mock_login
         mocked_handle_request.return_value = mocked_resp
-        assert self.aci_obj.register_node("TEP-1-101", "101", "Leaf101") == True  # noqa: E712
+        assert self.aci_obj.register_node("TEP-1-101", "101", "Leaf101") is True  # noqa: E712
         mocked_handle_request.assert_called_with(
             "fakeuri/api/node/mo/uni/controller/nodeidentpol.json",
-            {},
+            None,
             request_type="post",
             data={
                 "fabricNodeIdentP": {

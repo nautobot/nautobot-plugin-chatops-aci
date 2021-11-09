@@ -79,6 +79,17 @@ no-docstring-rgx="^(_|test_|Meta$)"
 disable = """,
     line-too-long,
     bad-continuation,
+    invalid-name,
+    consider-using-dict-items,
+    consider-iterating-dictionary,
+    logging-fstring-interpolation,
+    too-many-return-statements,
+    too-many-locals,
+    too-many-branches,
+    too-many-statements,
+    too-many-arguments,
+    too-many-public-methods
+
     """
 
 [tool.pylint.miscellaneous]

@@ -1,13 +1,14 @@
 """All interactions with aci."""
 
-import logging
-import requests
 import sys
+import logging
 from datetime import datetime
 from datetime import timedelta
 import re
-from .utils import tenant_from_dn, ap_from_dn
+import requests
 import urllib3
+from .utils import tenant_from_dn, ap_from_dn
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -17,13 +18,9 @@ logger = logging.getLogger("rq.worker")
 class RequestConnectError(Exception):
     """Exception class to be raised upon requests module connection errors."""
 
-    pass
-
 
 class RequestHTTPError(Exception):
     """Exception class to be raised upon requests module HTTP errors."""
-
-    pass
 
 
 class NautobotPluginChatopsAci:
@@ -37,6 +34,7 @@ class NautobotPluginChatopsAci:
         self.verify = verify
         self.cookies = ""
         self.last_login = None
+        self.refresh_timeout = None
 
     def _login(self):
         """Method to log into the ACI fabric and retrieve the token."""
@@ -49,9 +47,7 @@ class NautobotPluginChatopsAci:
             self.refresh_timeout = int(resp.json()["imdata"][0]["aaaLogin"]["attributes"]["refreshTimeoutSeconds"])
         return resp
 
-    def _handle_request(
-        self, url: str, params: dict = dict(), request_type: str = "get", data: dict = dict()
-    ) -> object:
+    def _handle_request(self, url: str, params: dict = None, request_type: str = "get", data: dict = None) -> object:
         """Send a REST API call to the APIC."""
         try:
             resp = requests.request(
@@ -63,8 +59,8 @@ class NautobotPluginChatopsAci:
                 json=data,
                 timeout=10,
             )
-        except requests.exceptions.RequestException as e:
-            raise RequestConnectError(f"Error occurred communicating with {self.base_uri}:\n{e}")
+        except requests.exceptions.RequestException as error:
+            raise RequestConnectError(f"Error occurred communicating with {self.base_uri}:\n{error}") from error
         return resp
 
     def _refresh_token(self):
@@ -78,13 +74,13 @@ class NautobotPluginChatopsAci:
 
     def _handle_error(self, response: object):
         """Private method to handle HTTP errors."""
-        calling_func = sys._getframe().f_back.f_code.co_name
+        calling_func = sys._getframe().f_back.f_code.co_name  # pylint: disable=protected-access
         raise RequestHTTPError(
             f"There was an HTTP error while performing the {calling_func} operation on {self.base_uri}:\n"
             f"Error: {response.status_code}, Reason: {response.reason}"
         )
 
-    def _get(self, uri: str, params: dict = dict()) -> object:
+    def _get(self, uri: str, params: dict = None) -> object:
         """Method to retrieve data from the ACI fabric."""
         url = self.base_uri + uri
         if self._refresh_token():
@@ -93,17 +89,14 @@ class NautobotPluginChatopsAci:
                 resp = self._handle_request(url, params)
                 if resp.ok:
                     return resp
-                else:
-                    return self._handle_error(resp)
-            else:
-                return self._handle_error(login_resp)
+                return self._handle_error(resp)
+            return self._handle_error(login_resp)
         resp = self._handle_request(url, params)
         if resp.ok:
             return resp
-        else:
-            return self._handle_error(resp)
+        return self._handle_error(resp)
 
-    def _post(self, uri: str, params: dict = dict(), data=dict()) -> object:
+    def _post(self, uri: str, params: dict = None, data=None) -> object:
         """Method to post data to the ACI fabric."""
         url = self.base_uri + uri
         if self._refresh_token():
@@ -112,15 +105,12 @@ class NautobotPluginChatopsAci:
                 resp = self._handle_request(url, params, request_type="post", data=data)
                 if resp.ok:
                     return resp
-                else:
-                    return self._handle_error(resp)
-            else:
-                return self._handle_error(login_resp)
+                return self._handle_error(resp)
+            return self._handle_error(login_resp)
         resp = self._handle_request(url, params, request_type="post", data=data)
         if resp.ok:
             return resp
-        else:
-            return self.handle_error(resp)
+        return self._handle_error(resp)
 
     def get_tenants(self) -> list:
         """Retrieve the list of tenants from the ACI fabric."""
@@ -179,8 +169,7 @@ class NautobotPluginChatopsAci:
         if int(resp.json()["totalCount"]) > 0:
             subnet_list = [data["fvSubnet"]["attributes"]["ip"] for data in resp.json()["imdata"]]
             return subnet_list
-        else:
-            return None
+        return None
 
     def get_contract_filters(self, tenant, contract_name: str) -> list:
         """Returns filters for a specified contract."""
@@ -454,5 +443,4 @@ class NautobotPluginChatopsAci:
         resp = self._post("/api/node/mo/uni/controller/nodeidentpol.json", data=payload)
         if resp.ok:
             return True
-        else:
-            return self._handle_error(resp)
+        return self._handle_error(resp)

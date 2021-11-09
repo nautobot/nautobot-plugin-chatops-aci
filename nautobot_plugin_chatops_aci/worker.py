@@ -1,7 +1,8 @@
 """Worker functions implementing Nautobot "aci" command and subcommands."""
 
-from django.conf import settings
 from distutils.util import strtobool
+from django.conf import settings
+
 
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
 from nautobot_chatops.choices import CommandStatusChoices
@@ -722,5 +723,4 @@ def register_node(dispatcher, apic, serial_nbr, node_id, name):
         )
         dispatcher.send_markdown(f"Serial Number: {serial_nbr}\nNode ID: {node_id}\nName: {name}")
         return CommandStatusChoices.STATUS_SUCCEEDED
-    else:
-        return CommandStatusChoices.STATUS_FAILED
+    return CommandStatusChoices.STATUS_FAILED
