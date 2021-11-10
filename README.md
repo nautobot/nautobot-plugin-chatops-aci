@@ -26,14 +26,14 @@ Once installed, the plugin needs to be enabled in your `nautobot_config.py`
 PLUGINS = ["nautobot_chatops", "nautobot_plugin_chatops_aci"]
 ```
 
-In addition,  add the below `PLUGINS_CONFIG` section to `nautobot_config.py`.  Enable/disable the platform(s) you will be working with by setting the enable flag to `True` or `False` (ex. `"enable_slack: True"`). Also, define the environment variables containing the required tokens/secrets as required for the target platform(s).  
+In addition,  add the below `PLUGINS_CONFIG` section to `nautobot_config.py`.   
 
 ```python
 # Also in nautobot_config.py
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
-        "enable_slack": True,
-        "enable_ms_teams": False,
+        "enable_slack": os.environ.get("ENABLE_SLACK"),
+        "enable_ms_teams": os.environ.get("ENABLE_MS_TEAMS"),
         "enable_webex": os.environ.get("ENABLE_WEBEX"),
         "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
         "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
@@ -49,7 +49,7 @@ PLUGINS_CONFIG = {
     "nautobot_chatops_aci": {"aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x}},
 }
 ```
-The `aci_creds` setting above creates a Python dictionary which imports any environment variables prefixed with `APIC`. The following environment variables are required:
+The `aci_creds` setting above creates a Python dictionary which imports any environment variables prefixed with `APIC`. The following environment variables are needed to define each APIC hostname and credentials:
 
 ```python
 APIC_USERNAME_NTCAPIC={{ APIC username }}
@@ -70,6 +70,29 @@ APIC_URI_DEVNET={{ https://apic_hostname }}
 APIC_VERIFY_DEVNET={{ Check SSL certificate (True or False) }}
 ```
 When executing chat commands, we would then be presented with a selection dialog containing both `ntcapic` and `devnet`.  
+
+In addition, the following environment variables are required for the chat platform in use:
+
+```python
+# Slack
+ENABLE_SLACK=true
+SLACK_API_TOKEN=foobar
+SLACK_SIGNING_SECRET=foobar
+
+# Webex
+ENABLE_WEBEX=true
+WEBEX_TOKEN=foobar
+WEBEX_SIGNING_SECRET=foobar
+
+# Mattermost
+ENABLE_MATTERMOST=false
+MATTERMOST_API_TOKEN=foobar
+MATTERMOST_URL=foobar
+
+ENABLE_MS_TEAMS=false
+MICROSOFT_APP_ID=foobar
+MICROSOFT_APP_PASSWORD=foobar
+```
 
 > When deploying as Docker containers, the above environment variables should be defined in the file `development/creds.env`. An example credentials file `creds.env.example` is available in the `development` folder.  
 
