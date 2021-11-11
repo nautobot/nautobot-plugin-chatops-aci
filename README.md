@@ -4,11 +4,12 @@ The [Nautobot](https://github.com/nautobot/nautobot) Cisco ACI Chatops Plugin ex
  
 ## Screenshots
   
-![image](https://user-images.githubusercontent.com/6945229/139871492-6a557f30-65d2-4015-a8f9-c8b9f5f22f88.png)
+| Slack | Webex |
+| ------- | ----------- |
+| ![image](https://user-images.githubusercontent.com/6945229/141326211-65369e64-9086-447e-8325-6156950f302a.png)|![image](https://user-images.githubusercontent.com/6945229/141326076-3a677546-a310-48f0-aaa0-e8e96385a180.png)
+|![image](https://user-images.githubusercontent.com/6945229/141327363-42942f87-8847-44ab-8c5b-1844170966c6.png)|![image](https://user-images.githubusercontent.com/6945229/141327121-e3231e26-0324-4f37-af1a-5b829bb57abd.png)
+|![image](https://user-images.githubusercontent.com/6945229/141327929-90821749-c8e4-43ce-be73-bc15b6f9ff8e.png)|![image](https://user-images.githubusercontent.com/6945229/141328400-b4440aa1-5a20-4753-a1f0-c2d9d32f549c.png)
 
-![image](https://user-images.githubusercontent.com/6945229/139872921-93f14a1d-68c0-4295-a5b3-dcc685c97a5a.png)
-
-![image](https://user-images.githubusercontent.com/6945229/139872116-5a99004a-364b-4a3b-b927-6ca64522ef09.png)
   
 
 ## Installation
