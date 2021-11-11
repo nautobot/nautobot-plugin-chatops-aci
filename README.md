@@ -4,23 +4,31 @@ The [Nautobot](https://github.com/nautobot/nautobot) Cisco ACI Chatops Plugin ex
  
 ## Screenshots
   
-| Slack | Webex |
-| ------- | ----------- |
-| ![image](https://user-images.githubusercontent.com/6945229/141326211-65369e64-9086-447e-8325-6156950f302a.png)|![image](https://user-images.githubusercontent.com/6945229/141326076-3a677546-a310-48f0-aaa0-e8e96385a180.png)
-|![image](https://user-images.githubusercontent.com/6945229/141327363-42942f87-8847-44ab-8c5b-1844170966c6.png)|![image](https://user-images.githubusercontent.com/6945229/141327121-e3231e26-0324-4f37-af1a-5b829bb57abd.png)
-|![image](https://user-images.githubusercontent.com/6945229/141327929-90821749-c8e4-43ce-be73-bc15b6f9ff8e.png)|![image](https://user-images.githubusercontent.com/6945229/141328400-b4440aa1-5a20-4753-a1f0-c2d9d32f549c.png)
-
+### Slack
+![image](https://user-images.githubusercontent.com/6945229/141345410-18d8fa67-6edd-4e63-8b50-0a708b9d390d.png)
   
+![image](https://user-images.githubusercontent.com/6945229/141345642-f87c7e32-78d7-4421-bd33-f261bded60dd.png)
+  
+![image](https://user-images.githubusercontent.com/6945229/141345906-4565b911-3739-4d88-b78e-c62228fb94b2.png)
+
+### Webex
+
+![image](https://user-images.githubusercontent.com/6945229/141346129-9d3cb1c4-53d0-45ec-9b8e-0cb8cb6831c8.png)
+  
+![image](https://user-images.githubusercontent.com/6945229/141346250-ad03510b-d4f5-454f-a1fc-1fe8e15737bf.png)
+
+![image](https://user-images.githubusercontent.com/6945229/141346413-bcf01740-91dc-422d-967a-9fe8cfd06092.png)
+
 
 ## Installation
 
-The plugin is available as a Python package in pypi and can be installed with pip
+The plugin is available as a Python package in pypi and can be installed with pip:
 
 ```shell
 pip install nautobot-plugin-chatops-aci
 ```
 
-Once installed, the plugin needs to be enabled in your `nautobot_config.py`
+Once installed, the plugin needs to be enabled in your `nautobot_config.py`:
 
 ```python
 # In your nautobot_config.py
@@ -29,34 +37,40 @@ PLUGINS = ["nautobot_chatops", "nautobot_plugin_chatops_aci"]
 
 In addition,  add the below `PLUGINS_CONFIG` section to `nautobot_config.py`.   
 
+> It is only necessary to add the sections from the below snippet for the chat platform you will be using (Slack, Webex, etc.). 
+
 ```python
 # Also in nautobot_config.py
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
-        "enable_slack": os.environ.get("ENABLE_SLACK"),
-        "enable_ms_teams": os.environ.get("ENABLE_MS_TEAMS"),
-        "enable_webex": os.environ.get("ENABLE_WEBEX"),
-        "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
-        "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
+        # Slack
+        "enable_slack": os.environ.get("ENABLE_SLACK", False),
         "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
         "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
+        # Webex
+        "enable_webex": os.environ.get("ENABLE_WEBEX", False),
         "webex_token": os.environ.get("WEBEX_TOKEN"),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
-        "enable_mattermost": False,
+        # Mattermost
+        "enable_mattermost": os.environ.get("ENABLE_MATTERMOST", False),
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
+        # MS Teams
+        "enable_ms_teams": os.environ.get("ENABLE_MS_TEAMS", False),
+        "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
+        "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
     },
     "nautobot_chatops_aci": {"aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x}},
 }
 ```
 The `aci_creds` setting above creates a Python dictionary which imports any environment variables prefixed with `APIC`. The following environment variables are needed to define each APIC hostname and credentials:
 
-```python
-APIC_USERNAME_NTCAPIC={{ APIC username }}
-APIC_PASSWORD_NTCAPIC={{ APIC password }}
-APIC_URI_NTCAPIC={{ https://apic_hostname }}
-APIC_VERIFY_NTCAPIC={{ Check SSL certificate (True or False) }}
+```bash
+export APIC_USERNAME_NTCAPIC="{{ APIC username }}"
+export APIC_PASSWORD_NTCAPIC="{{ APIC password }}"
+export APIC_URI_NTCAPIC="{{ https://apic_hostname }}"
+export APIC_VERIFY_NTCAPIC="{{ Check SSL certificate (True or False) }}"
 ```
 The text `NTCAPIC` in the above variable names can be replaced with an identifier of your choosing.  It will show up in the APIC selection dialogue when executing commands as shown below.  
   
@@ -64,38 +78,41 @@ The text `NTCAPIC` in the above variable names can be replaced with an identifie
   
 With this syntax, it is possible to support multiple APICs. For example, to add another APIC to the selection list we could specify a second set of credentials:
 
-```python
-APIC_USERNAME_DEVNET={{ APIC username }}
-APIC_PASSWORD_DEVNET={{ APIC password }}
-APIC_URI_DEVNET={{ https://apic_hostname }}
-APIC_VERIFY_DEVNET={{ Check SSL certificate (True or False) }}
+```bash
+export APIC_USERNAME_DEVNET="{{ APIC username }}"
+export APIC_PASSWORD_DEVNET="{{ APIC password }}"
+export APIC_URI_DEVNET="{{ https://apic_hostname }}"
+export APIC_VERIFY_DEVNET="{{ Check SSL certificate (True or False) }}"
 ```
 When executing chat commands, we would then be presented with a selection dialog containing both `ntcapic` and `devnet`.  
 
-In addition, the following environment variables are required for the chat platform in use:
+In addition, the following environment variables are required for the chat platform in use. The [Platform-specific Setup](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/docs/chat_setup/chat_setup.md#platform-specific-setup) document describes how to retrieve the tokens and secrets for each chat platform that will need to be used in the environment variables.  
 
-```python
+> It is only necessary to create the environment variables shown below for the chat platform you will be using. To make the environment variables persistent, add them to the ~/.bash_profile for the user running Nautobot. 
+
+```bash
 # Slack
-ENABLE_SLACK=true
-SLACK_API_TOKEN=foobar
-SLACK_SIGNING_SECRET=foobar
+export ENABLE_SLACK="true"
+export SLACK_API_TOKEN="foobar"
+export SLACK_SIGNING_SECRET="foobar"
 
 # Webex
-ENABLE_WEBEX=true
-WEBEX_TOKEN=foobar
-WEBEX_SIGNING_SECRET=foobar
+export ENABLE_WEBEX="true"
+export WEBEX_TOKEN="foobar"
+export WEBEX_SIGNING_SECRET="foobar"
 
 # Mattermost
-ENABLE_MATTERMOST=false
-MATTERMOST_API_TOKEN=foobar
-MATTERMOST_URL=foobar
+export ENABLE_MATTERMOST="false"
+export MATTERMOST_API_TOKEN="foobar"
+export MATTERMOST_URL="foobar"
 
-ENABLE_MS_TEAMS=false
-MICROSOFT_APP_ID=foobar
-MICROSOFT_APP_PASSWORD=foobar
+# Microsoft Teams
+export ENABLE_MS_TEAMS="false"
+export MICROSOFT_APP_ID="foobar"
+export MICROSOFT_APP_PASSWORD="foobar"
 ```
 
-> When deploying as Docker containers, the above environment variables should be defined in the file `development/creds.env`. An example credentials file `creds.env.example` is available in the `development` folder.  
+> When deploying as Docker containers, all of the above environment variables should be defined in the file `development/creds.env`. An example credentials file `creds.env.example` is available in the `development` folder.  
 
 
 ## Usage
