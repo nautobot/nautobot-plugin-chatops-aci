@@ -133,8 +133,8 @@ jobs:
         python-version: ["3.8"]
         nautobot-version: ["1.1.5"]
     env:
-      PYTHON_VER: "${{ matrix.python-version }}"
-      NAUTOBOT_VER: "${{ matrix.nautobot-version }}"
+      INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_PYTHON_VER: "${{ matrix.python-version }}"
+      INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_NAUTOBOT_VER: "${{ matrix.nautobot-version }}"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
@@ -157,39 +157,54 @@ jobs:
           cache-from: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
           cache-to: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
           build-args: |
-            NAUTOBOT_VER=${{ env.NAUTOBOT_VER }}
-            PYTHON_VER=${{ env.PYTHON_VER }}
+            NAUTOBOT_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_PYTHON_VER }}
+            PYTHON_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_NAUTOBOT_VER }}
       - name: "Show docker images"
         run: "docker image ls"
       - name: "Linting: Pylint"
         run: "poetry run invoke pylint"
     needs:
       - "build"
-  # pytest:
-  #   strategy:
-  #     fail-fast: true
-  #     matrix:
-  #       python-version: ["3.6", "3.7", "3.8", "3.9"]
-  #   runs-on: "ubuntu-20.04"
-  #   env:
-  #     PYTHON_VER: "${{ matrix.python-version }}"
-  #   steps:
-  #     - name: "Check out repository code"
-  #       uses: "actions/checkout@v2"
-  #     - name: "Setup environment"
-  #       uses: "networktocode/gh-action-setup-poetry-environment@v2"
-  #     - name: "Cache Docker images"
-  #       uses: "actions/cache@v2"
-  #       id: "cached-docker-images"
-  #       with:
-  #         path: "/tmp/docker"
-  #         key: "${{ runner.os }}-docker-${{ matrix.python-version }}-${{ hashFiles('./Dockerfile') }}"
-  #     - name: "Load docker image"
-  #       run: "docker load < /tmp/docker/netutils-py${{ matrix.python-version }}.tar"
-  #     - name: "Run Tests"
-  #       run: "poetry run invoke pytest"
-  #   needs:
-  #     - "pylint"
+  unittest:
+    runs-on: "ubuntu-20.04"
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
+        nautobot-version: ["1.0.3", "1.1.5"]
+    env:
+      INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_PYTHON_VER: "${{ matrix.python-version }}"
+      INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_NAUTOBOT_VER: "${{ matrix.nautobot-version }}"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Setup environment"
+        uses: "networktocode/gh-action-setup-poetry-environment@v2"
+      - name: "Copy credentials"
+        run: "cp ./development/creds.env.example ./development/creds.env"
+      - name: "Set up Docker Buildx"
+        id: "buildx"
+        uses: "docker/setup-buildx-action@v1"
+      - name: "Build"
+        uses: "docker/build-push-action@v2"
+        with:
+          builder: "${{ steps.buildx.outputs.name }}"
+          context: "./"
+          push: false
+          load: true
+          tags: "${{ env.PLUGIN_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
+          file: "./development/Dockerfile"
+          cache-from: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
+          cache-to: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
+          build-args: |
+            NAUTOBOT_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_PYTHON_VER }}
+            PYTHON_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_NAUTOBOT_VER }}
+      - name: "Show docker images"
+        run: "docker image ls"
+      - name: "Linting: Pylint"
+        run: "poetry run invoke unittest"
+    needs:
+      - "pylint"
   # publish_gh:
   #   name: "Publish to GitHub"
   #   runs-on: "ubuntu-20.04"
