@@ -157,8 +157,8 @@ jobs:
           cache-from: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
           cache-to: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
           build-args: |
-            NAUTOBOT_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_PYTHON_VER }}
-            PYTHON_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_NAUTOBOT_VER }}
+            PYTHON_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_PYTHON_VER }}
+            NAUTOBOT_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_NAUTOBOT_VER }}
       - name: "Show docker images"
         run: "docker image ls"
       - name: "Linting: Pylint"
@@ -197,8 +197,8 @@ jobs:
           cache-from: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
           cache-to: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
           build-args: |
-            NAUTOBOT_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_PYTHON_VER }}
-            PYTHON_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_NAUTOBOT_VER }}
+            PYTHON_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_PYTHON_VER }}
+            NAUTOBOT_VER=${{ env.INVOKE_NAUTOBOT_PLUGIN_CHATOPS_ACI_NAUTOBOT_VER }}
       - name: "Show docker images"
         run: "docker image ls"
       - name: "Linting: Pylint"
