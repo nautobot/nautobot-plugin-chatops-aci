@@ -93,7 +93,7 @@ jobs:
           builder: "${{ steps.buildx.outputs.name }}"
           context: "./"
           push: false
-          tags: "${{ matrix.env.PLUGIN_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
+          tags: "${{ env.PLUGIN_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
           file: "./development/Dockerfile"
           cache-from: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
           cache-to: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
@@ -152,7 +152,7 @@ jobs:
           context: "./"
           push: false
           load: true
-          tags: "${{ matrix.env.PLUGIN_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
+          tags: "${{ env.PLUGIN_NAME }}/nautobot:${{ matrix.nautobot-version }}-py${{ matrix.python-version }}"
           file: "./development/Dockerfile"
           cache-from: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
           cache-to: "type=gha,scope=py${{ matrix.python-version }}-nautobot${{ matrix.nautobot-version }}"
