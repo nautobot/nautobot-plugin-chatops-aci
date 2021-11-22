@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "nautobot-plugin-chatops-aci"
+name = "nautobot-chatops-aci"
 version = "0.1.0"
 description = "Nautobot Plugin Chatops Cisco ACI"
 authors = ["Network to Code, LLC <info@networktocode.com>"]
