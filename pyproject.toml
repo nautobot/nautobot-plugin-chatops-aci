@@ -22,9 +22,10 @@ packages = [
 [tool.poetry.dependencies]
 # Used for local development
 nautobot = { version = "*", optional = true }
-python = "^3.6"
+python = "^3.6.2"
 nautobot-chatops = "^1.5"
 prettytable = "^2.1.0"
+importlib-metadata = ">=3.5"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"
