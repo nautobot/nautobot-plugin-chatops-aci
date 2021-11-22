@@ -1,30 +1,31 @@
-- model: nautobot_chatops.accessgrant
-  pk: 6d12da0a-e07d-4571-bbe3-89af7fcc05f0
+---
+- model: "nautobot_chatops.accessgrant"
+  pk: "6d12da0a-e07d-4571-bbe3-89af7fcc05f0"
   fields:
-    created: 2021-04-30
-    last_updated: 2021-04-30 21:52:55.899823+00:00
-    command: '*'
-    subcommand: '*'
-    grant_type: user
-    name: '*'
-    value: '*'
-- model: nautobot_chatops.accessgrant
-  pk: a998c1ad-3a14-48dd-8607-0d14cc9aca44
+    created: "2021-04-30"
+    last_updated: "2021-04-30 21:52:55.899823+00:00"
+    command: "*"
+    subcommand: "*"
+    grant_type: "user"
+    name: "*"
+    value: "*"
+- model: "nautobot_chatops.accessgrant"
+  pk: "a998c1ad-3a14-48dd-8607-0d14cc9aca44"
   fields:
-    created: 2021-04-30
-    last_updated: 2021-04-30 21:52:38.276887+00:00
-    command: '*'
-    subcommand: '*'
-    grant_type: organization
-    name: '*'
-    value: '*'
-- model: nautobot_chatops.accessgrant
-  pk: cf1835ec-0b4f-4f30-a8cb-16053e3d57d7
+    created: "2021-04-30"
+    last_updated: "2021-04-30 21:52:38.276887+00:00"
+    command: "*"
+    subcommand: "*"
+    grant_type: "organization"
+    name: "*"
+    value: "*"
+- model: "nautobot_chatops.accessgrant"
+  pk: "cf1835ec-0b4f-4f30-a8cb-16053e3d57d7"
   fields:
-    created: 2021-04-30
-    last_updated: 2021-04-30 21:52:46.673661+00:00
-    command: '*'
-    subcommand: '*'
-    grant_type: channel
-    name: '*'
-    value: '*'
+    created: "2021-04-30"
+    last_updated: "2021-04-30 21:52:46.673661+00:00"
+    command: "*"
+    subcommand: "*"
+    grant_type: "channel"
+    name: "*"
+    value: "*"
