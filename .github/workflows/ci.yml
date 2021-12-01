@@ -1,8 +1,11 @@
 ---
 name: "CI"
 on:  # yamllint disable-line rule:truthy
-  - "push"
-  - "pull_request"
+  push:
+  pull_request:
+  release:
+    types:
+      - created
 
 env:
   PLUGIN_NAME: "nautobot-plugin-chatops-aci"
