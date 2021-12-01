@@ -6,7 +6,7 @@ on:  # yamllint disable-line rule:truthy
       - "main"
       - "develop"
   pull_request:
-    branches: 
+    branches:
       - "main"
       - "develop"
   release:
