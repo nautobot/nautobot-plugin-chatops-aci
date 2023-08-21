@@ -1,10 +1,13 @@
+# The code in this repository has been migrated to the [Nautobot ChatOps Repository](https://github.com/nautobot/nautobot-plugin-chatops) as an integration - read more about it in the [ChatOps Docs](https://docs.nautobot.com/projects/chatops/en/latest/admin/install/)! As of July 2023 this repository has been **FROZEN** - all development / issues / discussions for this integration are in the [Nautobot ChatOps Repository](https://github.com/nautobot/nautobot-plugin-chatops) going forward.
+
 # Nautobot Cisco ACI Chatops Plugin
 
 The [Nautobot](https://github.com/nautobot/nautobot) Cisco ACI Chatops Plugin extends the [Nautobot Chatops](https://github.com/nautobot/nautobot-plugin-chatops/) framework to interact with a Cisco APIC (Application Policy Infrastructure Controller) using commands in Slack, Webex, Microsoft Teams, and Mattermost.  
- 
+
 ## Screenshots
-  
+
 ### Slack
+
 ![image](https://user-images.githubusercontent.com/6945229/141345410-18d8fa67-6edd-4e63-8b50-0a708b9d390d.png)
   
 ![image](https://user-images.githubusercontent.com/6945229/141345642-f87c7e32-78d7-4421-bd33-f261bded60dd.png)
@@ -18,7 +21,6 @@ The [Nautobot](https://github.com/nautobot/nautobot) Cisco ACI Chatops Plugin ex
 ![image](https://user-images.githubusercontent.com/6945229/141346250-ad03510b-d4f5-454f-a1fc-1fe8e15737bf.png)
 
 ![image](https://user-images.githubusercontent.com/6945229/141346413-bcf01740-91dc-422d-967a-9fe8cfd06092.png)
-
 
 ## Installation
 
@@ -35,9 +37,9 @@ Once installed, the plugin needs to be enabled in your `nautobot_config.py`:
 PLUGINS = ["nautobot_chatops", "nautobot_plugin_chatops_aci"]
 ```
 
-In addition,  add the below `PLUGINS_CONFIG` section to `nautobot_config.py`.   
+In addition,  add the below `PLUGINS_CONFIG` section to `nautobot_config.py`.  
 
-> It is only necessary to add the sections from the below snippet for the chat platform you will be using (Slack, Webex, etc.). 
+> It is only necessary to add the sections from the below snippet for the chat platform you will be using (Slack, Webex, etc.).  
 
 ```python
 # Also in nautobot_config.py
@@ -64,6 +66,7 @@ PLUGINS_CONFIG = {
     "nautobot_chatops_aci": {"aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x}},
 }
 ```
+
 The `aci_creds` setting above creates a Python dictionary which imports any environment variables prefixed with `APIC`. The following environment variables are needed to define each APIC hostname and credentials:
 
 ```bash
@@ -72,6 +75,7 @@ export APIC_PASSWORD_NTCAPIC="{{ APIC password }}"
 export APIC_URI_NTCAPIC="{{ https://apic_hostname }}"
 export APIC_VERIFY_NTCAPIC="{{ Check SSL certificate (True or False) }}"
 ```
+
 The text `NTCAPIC` in the above variable names can be replaced with an identifier of your choosing.  It will show up in the APIC selection dialogue when executing commands as shown below.  
   
 ![image](https://user-images.githubusercontent.com/6945229/139917084-c30a2b8b-940a-4e23-bca4-2ab7bf7f6ed0.png)
@@ -84,11 +88,12 @@ export APIC_PASSWORD_DEVNET="{{ APIC password }}"
 export APIC_URI_DEVNET="{{ https://apic_hostname }}"
 export APIC_VERIFY_DEVNET="{{ Check SSL certificate (True or False) }}"
 ```
+
 When executing chat commands, we would then be presented with a selection dialog containing both `ntcapic` and `devnet`.  
 
 In addition, the following environment variables are required for the chat platform in use. The [Platform-specific Setup](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/docs/chat_setup/chat_setup.md#platform-specific-setup) document describes how to retrieve the tokens and secrets for each chat platform that will need to be used in the environment variables.  
 
-> It is only necessary to create the environment variables shown below for the chat platform you will be using. To make the environment variables persistent, add them to the ~/.bash_profile for the user running Nautobot. 
+> It is only necessary to create the environment variables shown below for the chat platform you will be using. To make the environment variables persistent, add them to the ~/.bash_profile for the user running Nautobot.
 
 ```bash
 # Slack
@@ -114,10 +119,11 @@ export MICROSOFT_APP_PASSWORD="foobar"
 
 > When deploying as Docker containers, all of the above environment variables should be defined in the file `development/creds.env`. An example credentials file `creds.env.example` is available in the `development` folder.  
 
-
 ## Usage
+
 ### Command Setup
-Add a top level command named `aci` to the platform you are using. See the [Platform-specific Setup](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/docs/chat_setup/chat_setup.md#platform-specific-setup) section of the [Nautobot Chatops Installation Guide](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/docs/chat_setup/chat_setup.md) for instructions specific to Slack, Microsoft Teams, WebEx, and Mattermost.  
+
+Add a top level command named `aci` to the platform you are using. See the [Platform-specific Setup](https://docs.nautobot.com/projects/chatops/en/latest/admin/install/#access-requirements) section of the [Nautobot Chatops Installation Guide](https://docs.nautobot.com/projects/chatops/en/latest/admin/install/) for instructions specific to Slack, Microsoft Teams, WebEx, and Mattermost.  
 
 The following commands are available:
 
@@ -155,39 +161,39 @@ The development environment can be used in 2 ways. First, with a local poetry en
 
 The [PyInvoke](http://www.pyinvoke.org/) library is used to provide some helper commands based on the environment.  There are a few configuration parameters which can be passed to PyInvoke to override the default configuration:
 
-* `nautobot_ver`: the version of Nautobot to use as a base for any built docker containers (default: latest)
-* `project_name`: the default docker compose project name (default: nautobot-plugin-chatops-aci)
-* `python_ver`: the version of Python to use as a base for any built docker containers (default: 3.6)
-* `local`: a boolean flag indicating if invoke tasks should be run on the host or inside the docker containers (default: False, commands will be run in docker containers)
-* `compose_dir`: the full path to a directory containing the project compose files
-* `compose_files`: a list of compose files applied in order (see [Multiple Compose files](https://docs.docker.com/compose/extends/#multiple-compose-files) for more information)
+- `nautobot_ver`: the version of Nautobot to use as a base for any built docker containers (default: latest)
+- `project_name`: the default docker compose project name (default: nautobot-plugin-chatops-aci)
+- `python_ver`: the version of Python to use as a base for any built docker containers (default: 3.6)
+- `local`: a boolean flag indicating if invoke tasks should be run on the host or inside the docker containers (default: False, commands will be run in docker containers)
+- `compose_dir`: the full path to a directory containing the project compose files
+- `compose_files`: a list of compose files applied in order (see [Multiple Compose files](https://docs.docker.com/compose/extends/#multiple-compose-files) for more information)
 
 Using PyInvoke these configuration options can be overridden using [several methods](http://docs.pyinvoke.org/en/stable/concepts/configuration.html).  Perhaps the simplest is simply setting an environment variable `INVOKE_NAUTOBOT-PLUGIN-CHATOPS-ACI_VARIABLE_NAME` where `VARIABLE_NAME` is the variable you are trying to override.  The only exception is `compose_files`, because it is a list it must be overridden in a yaml file.  There is an example `invoke.yml` in this directory which can be used as a starting point.
 
 #### Local Poetry Development Environment
 
-1.  Copy `development/creds.env.example` to `development/creds.env` (This file will be ignored by git and docker)
-2.  Uncomment the `POSTGRES_HOST`, `REDIS_HOST`, and `NAUTOBOT_ROOT` variables in `development/creds.env`
-3.  Create an invoke.yml with the following contents at the root of the repo:
+1. Copy `development/creds.env.example` to `development/creds.env` (This file will be ignored by git and docker)
+2. Uncomment the `POSTGRES_HOST`, `REDIS_HOST`, and `NAUTOBOT_ROOT` variables in `development/creds.env`
+3. Create an invoke.yml with the following contents at the root of the repo:
 
-```shell
----
-nautobot_plugin_chatops_aci:
-  local: true
-  compose_files:
-    - "docker-compose.requirements.yml"
-```
+  ```shell
+  ---
+  nautobot_plugin_chatops_aci:
+    local: true
+    compose_files:
+      - "docker-compose.requirements.yml"
+  ```
 
-3.  Run the following commands:
+4. Run the following commands:
 
-```shell
-poetry shell
-poetry install
-export $(cat development/dev.env | xargs)
-export $(cat development/creds.env | xargs) 
-```
+  ```shell
+  poetry shell
+  poetry install
+  export $(cat development/dev.env | xargs)
+  export $(cat development/creds.env | xargs) 
+  ```
 
-4.  You can now run nautobot-server commands as you would from the [Nautobot documentation](https://nautobot.readthedocs.io/en/latest/) for example to start the development server:
+5. You can now run nautobot-server commands as you would from the [Nautobot documentation](https://nautobot.readthedocs.io/en/latest/) for example to start the development server:
 
 ```shell
 nautobot-server runserver 0.0.0.0:8080 --insecure
@@ -199,8 +205,8 @@ Nautobot server can now be accessed at [http://localhost:8080](http://localhost:
 
 This project is managed by [Python Poetry](https://python-poetry.org/) and has a few requirements to setup your development environment:
 
-1.  Install Poetry, see the [Poetry Documentation](https://python-poetry.org/docs/#installation) for your operating system.
-2.  Install Docker, see the [Docker documentation](https://docs.docker.com/get-docker/) for your operating system.
+1. Install Poetry, see the [Poetry Documentation](https://python-poetry.org/docs/#installation) for your operating system.
+2. Install Docker, see the [Docker documentation](https://docs.docker.com/get-docker/) for your operating system.
 
 Once you have Poetry and Docker installed you can run the following commands to install all other development dependencies in an isolated python virtual environment:
 
@@ -214,7 +220,7 @@ Nautobot server can now be accessed at [http://localhost:8080](http://localhost:
 
 ### CLI Helper Commands
 
-The project is coming with a CLI helper based on [invoke](http://www.pyinvoke.org/) to help setup the development environment. The commands are listed below in 3 categories `dev environment`, `utility` and `testing`. 
+The project is coming with a CLI helper based on [invoke](http://www.pyinvoke.org/) to help setup the development environment. The commands are listed below in 3 categories `dev environment`, `utility` and `testing`.
 
 Each command can be executed with `invoke <command>`. Environment variables `INVOKE_NAUTOBOT-PLUGIN-CHATOPS-ACI_PYTHON_VER` and `INVOKE_NAUTOBOT-PLUGIN-CHATOPS-ACI_NAUTOBOT_VER` may be specified to override the default versions. Each command also has its own help `invoke <command> --help`
 
@@ -254,5 +260,3 @@ Each command can be executed with `invoke <command>`. Environment variables `INV
 
 For any questions or comments, please check the [FAQ](FAQ.md) first and feel free to swing by the [Network to Code slack channel](https://networktocode.slack.com/) (channel #networktocode).
 Sign up [here](http://slack.networktocode.com/)
-
-
